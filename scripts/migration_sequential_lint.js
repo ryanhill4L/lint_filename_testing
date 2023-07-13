@@ -15,6 +15,7 @@ fs.readdir(directoryPath, (err, files) => {
     console.log(`ℹ️  Path:    '${directoryPath}'`);
     console.log("Checking sequence...");
 
+    let isSequenceBroken = false;
     for (let i = 0; i < files.length; i++) {
         const expectedSequenceNumber = i + 1;
         const actualSequenceNumber = parseInt(files[i].slice(0, 5), 10);
@@ -22,13 +23,19 @@ fs.readdir(directoryPath, (err, files) => {
         if (actualSequenceNumber !== expectedSequenceNumber) {
             console.error(`❌ Non-sequential filename: ${files[i]}`);
             console.error(`Expected sequence number: ${expectedSequenceNumber}, but got: ${actualSequenceNumber}`);
-            process.exit(1);
+            isSequenceBroken = true;
+            break;
         }
 
         console.log(`✔️  ${files[i]}`);
     }
 
-    console.log("Sequence check finished.");
-    console.log(`ℹ️  Files analyzed:  ${files.length}`);
-    console.log("✅ Success: All filenames are sequential.");
+    if (!isSequenceBroken) {
+        console.log("Sequence check finished.");
+        console.log(`ℹ️  Files analyzed:  ${files.length}`);
+        console.log("✅ Success: All filenames are sequential.");
+    } else {
+        console.error("Sequence check finished with errors.");
+        process.exit(1);
+    }
 });
