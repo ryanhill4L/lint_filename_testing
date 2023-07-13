@@ -9,12 +9,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: lint migration files
+      - name: Run lint on migration files
         uses: batista/lint-filenames@v1
         with:
             path: './migrations'
