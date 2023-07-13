@@ -1,42 +1,30 @@
-name: 'build-test'
+name: 'migration-lint'
 on: # rebuild any PRs and main branch changes
   pull_request:
-  push:
-    branches:
-      - 'master'
-      - 'releases/*'
 
 jobs:
-  build: # make sure build/ci work properly
+  lint: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+      - name: Run lint on migration files
+        uses: batista/lint-filenames@v1
         with:
-          node-version-file: '.nvmrc'
+            path: './migrations'
+            pattern: '^[0-9]{5}_[a-z_]*\.(sql|go)$'
 
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('package-lock.json') }}
-          restore-keys: npm-
-
-      - run: npm ci
-
-      - run: npm run all
-
-  tests: # make sure the action works on a clean machine without building
+  sequential:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+        - name: Checkout
+          uses: actions/checkout@v3
 
-      - name: migration files
-        uses: ./
-        with:
-          path: './migrations'
-          pattern: "^[0-9]{5}_[a-z_]*\\.(sql|go)$"
+        - name: Setup Node.js environment
+          uses: actions/setup-node@v2
+          with:
+            node-version: '14'
+
+        - name: Check sequential filenames
+          run: node ./scripts/migration_sequential_lint.js
