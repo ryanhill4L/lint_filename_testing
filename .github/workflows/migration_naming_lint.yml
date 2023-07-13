@@ -27,6 +27,6 @@ jobs:
             node-version: '14'
 
         - name: Check sequential filenames
-          run: node ./sequential_lint.js
+          run: node ./scripts/migration_sequential_lint.js
 
 
