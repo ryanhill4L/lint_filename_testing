@@ -1,25 +1,21 @@
 name: 'migration-lint'
 on: # rebuild any PRs and main branch changes
   pull_request:
-  push:
-    branches:
-      - 'master'
-      - 'releases/*'
 
 jobs:
   lint: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v2
         with:
           node-version: '14'
 
-      - name: Install dependencies
-        run: npm install --global filename-lint
-
-      - name: Lint file names
-        run: filename-lint --pattern='^[0-9]{5}_[a-z_]*\.(sql|go)$' ./sql_files
+      - name: lint migration files
+        uses: batista/lint-filenames@v1
+        with:
+            path: './migrations'
+            pattern: '^[0-9]{5}_[a-z_]*\.(sql|go)$'
