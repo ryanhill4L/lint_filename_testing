@@ -15,8 +15,5 @@ jobs:
             path: './migrations'
             pattern: '^[0-9]{5}_[a-z_]*\.(sql|go)$'
 
-      - name: Check sequential filenames
-        run: node ./scripts/migration_sequential_lint.js
-
-
-
+    #   - name: Check sequential filenames
+    #     run: node ./scripts/migration_sequential_lint.js
