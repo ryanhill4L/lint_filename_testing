@@ -14,6 +14,7 @@ jobs:
         with:
             path: './migrations'
             pattern: '^[0-9]{5}_[a-z_]*\.(sql|go)$'
+
   sequential:
     runs-on: ubuntu-latest
     steps:
@@ -26,22 +27,6 @@ jobs:
             node-version: '14'
 
         - name: Check sequential filenames
-          run: |
-            const fs = require('fs');
-            const path = require('path');
-            const directoryPath = './migrations';
-            fs.readdir(directoryPath, (err, files) => {
-                if (err) {
-                console.log('Unable to scan directory: ' + err);
-                process.exit(1);
-                }
-                files.sort();
-                for (let i = 0; i < files.length; i++) {
-                if (parseInt(files[i].slice(0, 5)) !== i + 1) {
-                    console.log(`Non-sequential filename: ${files[i]}`);
-                    process.exit(1);
-                }
-                }
-            });
+          run: node ./sequential_lint.js
 
 
