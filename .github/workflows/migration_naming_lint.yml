@@ -1,4 +1,4 @@
-name: 'build-test'
+name: 'migration-lint'
 on: # rebuild any PRs and main branch changes
   pull_request:
   push:
@@ -7,36 +7,19 @@ on: # rebuild any PRs and main branch changes
       - 'releases/*'
 
 jobs:
-  build: # make sure build/ci work properly
+  lint: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup Node.js
+      - name: Setup Node.js environment
         uses: actions/setup-node@v2
         with:
-          node-version-file: '.nvmrc'
+          node-version: '14'
 
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('package-lock.json') }}
-          restore-keys: npm-
+      - name: Install dependencies
+        run: npm install --global filename-lint
 
-      - run: npm ci
-
-      - run: npm run all
-
-  tests: # make sure the action works on a clean machine without building
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: migration files
-        uses: ./
-        with:
-          path: './migrations'
-          pattern: "^[0-9]{5}_[a-z_]*\\.(sql|go)$"
+      - name: Lint file names
+        run: filename-lint --pattern='^[0-9]{5}_[a-z_]*\.(sql|go)$' ./sql_files
