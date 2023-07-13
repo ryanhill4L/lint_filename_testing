@@ -16,9 +16,9 @@ try {
         const actualSequenceNumber = parseInt(files[i].slice(0, 5), 10);
 
         if (actualSequenceNumber !== expectedSequenceNumber) {
-            console.error(`❌ Non-sequential filename: ${files[i]}`);
-            console.error(`Expected sequence number: ${expectedSequenceNumber}, but got: ${actualSequenceNumber}`);
-            console.error("Sequence check finished with errors.");
+            console.log(`❌ Non-sequential filename: ${files[i]}`);
+            console.log(`Expected sequence number: ${expectedSequenceNumber}, but got: ${actualSequenceNumber}`);
+            console.log("Sequence check finished with errors.");
             process.exit(1);
         }
 
@@ -30,6 +30,6 @@ try {
     console.log("✅ Success: All filenames are sequential.");
 
 } catch (err) {
-    console.error('Unable to scan directory: ' + err);
+    console.log('Unable to scan directory: ' + err);
     process.exit(1);
 }
